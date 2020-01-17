@@ -8,15 +8,14 @@ import com.example.myapplication3.network.retrofit.Repository
 
 
 class MainViewModel(private val savedStateHandle: SavedStateHandle,
-      private val repository: Repository) : ViewModel() {
+
+                    private val repository: Repository) : ViewModel() {
 
     private var weatherHelper : MutableLiveData<WeatherHelper> = MutableLiveData()
-
     private var sdValue : MutableLiveData<Double> = MutableLiveData()
     private var checkInternet : MutableLiveData<Boolean> = MutableLiveData()
 
     var progress = repository.getProgressState()
-
     var cloudiness = repository.cloudinessTemp
 
 
@@ -37,6 +36,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
 
         return checkInternet
     }
+
     fun getWeatherDetails() : LiveData<WeatherHelper>{
 
 
@@ -77,10 +77,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
     fun getStandardDev() : LiveData<Double>{
 
         sdValue.value?.let {
-
-
             return sdValue
-
         }
 
         if(savedStateHandle.contains("sd")){

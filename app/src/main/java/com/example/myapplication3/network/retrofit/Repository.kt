@@ -26,18 +26,7 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
         fun getInstance(context: Context, apiCall: ApiCall) : Repository{
             return Repository(context, apiCall)
         }
-
-
     }
-
-
-    fun isNetExist(): MutableLiveData<Boolean> {
-
-        isNetAvailable.value = true
-        return isNetAvailable
-    }
-
-    var isNetAvailable = MutableLiveData<Boolean>()
 
 
     fun getProgressState(): MutableLiveData<Int> {
@@ -60,7 +49,7 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
         }
 
         val weather = WeatherHelper()
-        var liveData = MutableLiveData<WeatherHelper>()
+        val liveData = MutableLiveData<WeatherHelper>()
         apiCall.getCurrentWeather().enqueue(object : Callback<WeatherHelper>{
             override fun onFailure(call: Call<WeatherHelper>, t: Throwable) {
 

@@ -8,7 +8,7 @@ class WeatherHelper : Serializable{
 
 
     @SerializedName("name")
-    var name : String ?= ""
+    var name = ""
 
     @SerializedName("coord")
     var coordinates : Coordinates ?= null
