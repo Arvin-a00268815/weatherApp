@@ -67,7 +67,7 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
 
 
                 weather.coordinates = temp?.coordinates
-                weather.name = temp?.name
+                weather.name = temp?.name!!
                 weather.rain = temp?.rain
                 weather.wind = temp?.wind
                 weather.weather = temp?.weather
