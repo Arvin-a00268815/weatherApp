@@ -18,24 +18,13 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class Repository(var context: Context) {
-
-
-
+class Repository private constructor(val context: Context, val apiCall: ApiCall) {
 
 
     companion object {
 
-        val baseUrl = "https://twitter-code-challenge.s3.amazonaws.com"
-        fun getApiService(): ApiCall {
-
-
-            return Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(ApiCall::class.java)
+        fun getInstance(context: Context, apiCall: ApiCall) : Repository{
+            return Repository(context, apiCall)
         }
 
 
@@ -70,7 +59,6 @@ class Repository(var context: Context) {
             throw NoInternetException()
         }
 
-        var apiCall = getApiService()
         val weather = WeatherHelper()
         var liveData = MutableLiveData<WeatherHelper>()
         apiCall.getCurrentWeather().enqueue(object : Callback<WeatherHelper>{
@@ -136,7 +124,6 @@ class Repository(var context: Context) {
         if(!isNetworkAvailable(context)){
             throw NoInternetException()
         }
-        var apiCall = getApiService()
         var liveData = MutableLiveData<Double>()
 
 

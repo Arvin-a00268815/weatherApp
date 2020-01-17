@@ -1,18 +1,15 @@
 package com.example.myapplication3.ui.main
 
 import android.app.Application
-import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.myapplication3.WeatherHelper
 import com.example.myapplication3.network.retrofit.NoInternetException
 import com.example.myapplication3.network.retrofit.Repository
-import java.lang.Exception
 
 
-class MainViewModel(application: Application, var savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
+class MainViewModel(private val savedStateHandle: SavedStateHandle,
+      private val repository: Repository) : ViewModel() {
 
-    var repository = Repository(application.applicationContext)
     private var weatherHelper : MutableLiveData<WeatherHelper> = MutableLiveData()
 
     private var sdValue : MutableLiveData<Double> = MutableLiveData()

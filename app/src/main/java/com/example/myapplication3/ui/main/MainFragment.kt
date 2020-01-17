@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication3.R
 import com.example.myapplication3.TemperatureConverter
 import com.example.myapplication3.databinding.MainFragmentBinding
+import com.example.myapplication3.network.retrofit.ApiBuilder
+import com.example.myapplication3.network.retrofit.Repository
 import kotlinx.android.synthetic.main.main_fragment.*
 
 class MainFragment : Fragment() {
@@ -47,10 +49,10 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        // Specify the current activity as the lifecycle owner.
 
-        viewModel = ViewModelProvider(activity!!,
-            SavedStateViewModelFactory(activity!!.application, activity!!)).get(MainViewModel::class.java)
+        val repo = Repository.getInstance(this.context!!, ApiBuilder.getInstance())
+        val factory = MainViewModelFactory(activity!!, null, repo)
+        viewModel = ViewModelProvider(activity!!, factory).get(MainViewModel::class.java)
 
         val binding = DataBindingUtil.bind<MainFragmentBinding>(view)
         binding!!.lifecycleOwner = this
