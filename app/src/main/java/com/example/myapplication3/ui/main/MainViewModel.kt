@@ -38,6 +38,10 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
     }
 
     fun getWeatherDetails() : LiveData<WeatherHelper>{
+        return weatherHelper
+    }
+
+    fun fetchWeatherDetails() : LiveData<WeatherHelper>{
 
 
         weatherHelper.value?.let {
@@ -74,7 +78,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
     }
 
 
-    fun getStandardDev() : LiveData<Double>{
+    fun fetchStandardDev() : LiveData<Double>{
 
         sdValue.value?.let {
             return sdValue
@@ -96,5 +100,9 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
         return sdValue
     }
 
+    fun getStandardDev() : LiveData<Double>{
+
+        return sdValue
+    }
 
 }
