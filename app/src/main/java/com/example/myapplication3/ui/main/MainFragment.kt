@@ -51,7 +51,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val repo = Repository.getInstance(this.context!!, ApiBuilder.getInstance())
-        val factory = MainViewModelFactory(activity!!, null, repo)
+        val factory = MainViewModelFactory(requireActivity(), null, repo)
         viewModel = ViewModelProvider(activity!!, factory).get(MainViewModel::class.java)
 
         val binding = DataBindingUtil.bind<MainFragmentBinding>(view)
