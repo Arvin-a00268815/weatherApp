@@ -11,9 +11,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.*
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -83,6 +81,7 @@ class MainViewModelTest {
         Mockito.`when`(repository.getCurrentWeather()).thenReturn(weatherLiveData)
 
         viewModel.fetchWeatherDetails().observeForever(observer)
+
 
         Assert.assertNotNull(viewModel.fetchWeatherDetails().value)
 

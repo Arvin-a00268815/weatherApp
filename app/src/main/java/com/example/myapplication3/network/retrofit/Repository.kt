@@ -3,6 +3,7 @@ package com.example.myapplication3.network.retrofit
 import android.content.Context
 import android.net.ConnectivityManager
 import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication3.StandardDeviationCalculator
 import com.example.myapplication3.WeatherHelper
@@ -38,18 +39,20 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
     var progress = MutableLiveData<Int>()
 
     val cloudinessTemp = MutableLiveData<Int>()
+    val currentWeatherLiveData = MutableLiveData<WeatherHelper>()
+
+    fun currentWeather() = currentWeatherLiveData as LiveData<WeatherHelper>
 
 
 
 
     fun getCurrentWeather() : MutableLiveData<WeatherHelper> {
 
-        if (!isNetworkAvailable(context)){
-            throw NoInternetException()
-        }
+//        if (!isNetworkAvailable(context)){
+//            throw NoInternetException()
+//        }
 
         val weather = WeatherHelper()
-        val liveData = MutableLiveData<WeatherHelper>()
         apiCall.getCurrentWeather().enqueue(object : Callback<WeatherHelper>{
             override fun onFailure(call: Call<WeatherHelper>, t: Throwable) {
 
@@ -75,7 +78,7 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
 
 
 
-                liveData.postValue(weather)
+                currentWeatherLiveData.postValue(weather)
 
                 saveState?.onSaveWeather(weather)
 
@@ -92,7 +95,7 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
 
         })
 
-        return liveData
+        return currentWeatherLiveData
 
     }
 
@@ -110,9 +113,9 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
     }
     fun getSD() : MutableLiveData<Double> {
 
-        if(!isNetworkAvailable(context)){
-            throw NoInternetException()
-        }
+//        if(!isNetworkAvailable(context)){
+//            throw NoInternetException()
+//        }
         var liveData = MutableLiveData<Double>()
 
 
