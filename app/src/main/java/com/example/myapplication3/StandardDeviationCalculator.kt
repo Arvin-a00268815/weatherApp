@@ -10,14 +10,14 @@ class StandardDeviationCalculator {
             try {
                 var sumValue = 0.0
 
-                list.map {
+                list.forEach {
                     sumValue += it
                 }
 
                 val meanValue = sumValue / list.size
                 var sumDiff = 0.0
 
-                list.map {
+                list.forEach {
                     var diff = it - meanValue
                     var diffSq = diff * diff
                     sumDiff += diffSq

@@ -2,15 +2,17 @@ package com.example.myapplication3.network.retrofit
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication3.StandardDeviationCalculator
 import com.example.myapplication3.WeatherHelper
-import io.reactivex.Observable
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subscribers.DisposableSubscriber
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -119,31 +121,23 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
         var liveData = MutableLiveData<Double>()
 
 
-        val o1 = apiCall.getWeatherForecast("1")
-        val o2 = apiCall.getWeatherForecast("2")
-        val o3 = apiCall.getWeatherForecast("3")
-        val o4 = apiCall.getWeatherForecast("4")
-        val o5 = apiCall.getWeatherForecast("5")
-
-        val list = ArrayList<Observable<WeatherHelper>>()
-        list.add(o1)
-        list.add(o2)
-        list.add(o3)
-        list.add(o4)
-        list.add(o5)
 
 
         val responseItems = ArrayList<Float>()
 
         progress.postValue(View.VISIBLE)
 
-        Observable.merge(listOf(o1, o2, o3, o4, o5))
-            .subscribeOn(Schedulers.io())
+
+
+        Observable.range(1,5)
+            .flatMap {
+                apiCall.getWeatherForecast(it.toString()).subscribeOn(Schedulers.io())
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : DisposableObserver<WeatherHelper>(){
 
                 override fun onComplete() {
-
+                    Log.e("complete","-")
 
                     val sd = StandardDeviationCalculator.calculate(responseItems)
                     liveData.postValue(sd)
@@ -155,17 +149,21 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
                 }
 
                 override fun onNext(t: WeatherHelper) {
+                    Log.e("item", "="+t.weather!!.temp)
                     responseItems.add(t.weather!!.temp)
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.e("error","--")
                 }
 
             })
+        
 
         return liveData
 
     }
+
 
 
 }
