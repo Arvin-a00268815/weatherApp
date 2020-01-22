@@ -3,15 +3,14 @@ package com.example.myapplication3.ui.main
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class Weather : Serializable {
+class Weather(
 
     @SerializedName("temp")
-    var temp: Float = 0.0F
+    var temp: Float,
 
     @SerializedName("pressure")
-    var pressure : Int = 0
+    var pressure : Int,
 
     @SerializedName("humidity")
-    var humidity: Int = 0
-
-}
+    var humidity: Int )
+: Serializable

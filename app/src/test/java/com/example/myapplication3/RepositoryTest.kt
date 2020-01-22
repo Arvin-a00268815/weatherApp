@@ -79,7 +79,7 @@ class RepositoryTest {
         Mockito.`when`(apiCall.getWeatherForecast(ArgumentMatchers.anyString()))
             .thenReturn(Observable.just(weatherHelper))
 
-        repository.getSD()
+        //repository.getSD()
 
         Mockito.verify(apiCall, Mockito.times(5)).getWeatherForecast(ArgumentMatchers.anyString())
 

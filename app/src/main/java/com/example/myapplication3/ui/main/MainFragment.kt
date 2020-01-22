@@ -1,6 +1,7 @@
 package com.example.myapplication3.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,19 +66,22 @@ class MainFragment : Fragment() {
 
 
 
-            fahrenheit_textView.text = TemperatureConverter.celsiusToFahrenheit(it.weather!!.temp).toString()
-            degree_textView.text = it.weather!!.temp.toString()
-            wind_speed.text = it.clouds!!.cloudiness.toString()
+            fahrenheit_textView.text = TemperatureConverter.celsiusToFahrenheit(it.weather.temp).toString()
+            degree_textView.text = it.weather.temp.toString()
+            wind_speed.text = it.wind.speed.toString()
 
+            viewModel.checkCloudiness(it.clouds.cloudiness)
 
+        })
+
+        viewModel.observeStandardDev().observe(viewLifecycleOwner, Observer {
+            Log.e("--","--")
+            sd_textView.text = it.toString()
         })
 
         sd_button.setOnClickListener {
 
-            viewModel.fetchStandardDev().observe(viewLifecycleOwner, Observer {
-
-                sd_textView.text = it.toString()
-            })
+            viewModel.fetchStandardDev()
 
         }
 

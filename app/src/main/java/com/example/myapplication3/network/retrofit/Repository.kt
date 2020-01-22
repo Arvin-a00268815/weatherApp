@@ -40,10 +40,6 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
 
     var progress = MutableLiveData<Int>()
 
-    val cloudinessTemp = MutableLiveData<Int>()
-    val currentWeatherLiveData = MutableLiveData<WeatherHelper>()
-
-    fun currentWeather() = currentWeatherLiveData as LiveData<WeatherHelper>
 
 
 
@@ -54,7 +50,8 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
 //            throw NoInternetException()
 //        }
 
-        val weather = WeatherHelper()
+        val currentWeatherLiveData = MutableLiveData<WeatherHelper>()
+
         apiCall.getCurrentWeather().enqueue(object : Callback<WeatherHelper>{
             override fun onFailure(call: Call<WeatherHelper>, t: Throwable) {
 
@@ -66,31 +63,23 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
 
 
                 System.out.println("--rp-")
-                val temp = response.body()
+                val temp = response.body()!!
 
+                //temp!!.clouds.cloudiness = 20
 
-
-
-                weather.coordinates = temp?.coordinates
-                weather.name = temp?.name!!
-                weather.rain = temp?.rain
-                weather.wind = temp?.wind
-                weather.weather = temp?.weather
-                weather.clouds = temp?.clouds
-
+                val weather = WeatherHelper(temp.name,
+                    temp.coordinates,
+                    temp.weather,
+                    temp.wind,
+                    temp.rain,
+                    temp.clouds)
 
 
                 currentWeatherLiveData.postValue(weather)
 
                 saveState?.onSaveWeather(weather)
 
-                if (weather!!.clouds!!.cloudiness > 50){
-                    cloudinessTemp.postValue(View.VISIBLE)
 
-                }else{
-                    cloudinessTemp.postValue(View.GONE)
-
-                }
 
 
             }
@@ -100,6 +89,8 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
         return currentWeatherLiveData
 
     }
+
+
 
     interface SaveState{
         fun onSaveWeather(weatherHelper: WeatherHelper)
@@ -113,12 +104,14 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
         val activeNetworkInfo = connectivityManager!!.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
-    fun getSD() : MutableLiveData<Double> {
+
+
+    fun getSD(repo: Repo){
 
 //        if(!isNetworkAvailable(context)){
 //            throw NoInternetException()
 //        }
-        var liveData = MutableLiveData<Double>()
+       // val liveData = MutableLiveData<Double>()
 
 
 
@@ -140,8 +133,9 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
                     Log.e("complete","-")
 
                     val sd = StandardDeviationCalculator.calculate(responseItems)
-                    liveData.postValue(sd)
+                    //liveData.postValue(sd)
 
+                    repo.onSDcomplete(sd)
                     progress.postValue(8)
                     saveState!!.onSaveSD(sd)
 
@@ -149,8 +143,8 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
                 }
 
                 override fun onNext(t: WeatherHelper) {
-                    Log.e("item", "="+t.weather!!.temp)
-                    responseItems.add(t.weather!!.temp)
+                    Log.e("item", "="+t.weather.temp)
+                    responseItems.add(t.weather.temp)
                 }
 
                 override fun onError(e: Throwable) {
@@ -158,12 +152,13 @@ class Repository private constructor(val context: Context, val apiCall: ApiCall)
                 }
 
             })
-        
-
-        return liveData
 
     }
 
+
+    interface Repo{
+        fun onSDcomplete(sd : Double)
+    }
 
 
 }

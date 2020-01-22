@@ -4,28 +4,26 @@ import com.example.myapplication3.ui.main.*
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class WeatherHelper : Serializable{
+data class WeatherHelper(
 
 
     @SerializedName("name")
-    var name = ""
+    var name : String,
 
     @SerializedName("coord")
-    var coordinates : Coordinates ?= null
+    var coordinates : Coordinates,
 
     @SerializedName("weather")
-    var weather : Weather ? = null
+    var weather : Weather,
 
     @SerializedName("wind")
-    var wind : Wind ? = null
+    var wind : Wind,
 
     @SerializedName("rain")
-    var rain : Rain ? = null
-
+    var rain : Rain,
 
     @SerializedName("clouds")
-    var clouds : Clouds?= null
+    var clouds : Clouds
 
 
-
-}
+) : Serializable

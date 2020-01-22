@@ -1,6 +1,7 @@
 package com.example.myapplication3.ui.main
 
 import android.app.Application
+import android.view.View
 import androidx.lifecycle.*
 import com.example.myapplication3.WeatherHelper
 import com.example.myapplication3.network.retrofit.NoInternetException
@@ -16,7 +17,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
     private var checkInternet : MutableLiveData<Boolean> = MutableLiveData()
 
     var progress = repository.getProgressState()
-    var cloudiness = repository.cloudinessTemp
+    var cloudiness = MutableLiveData<Int>()
 
 
     init {
@@ -29,6 +30,20 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
                 saveSD(sd)
             }
         }
+    }
+
+
+    fun checkCloudiness(cloudinessValue: Int) : Boolean{
+        if (cloudinessValue > 50){
+            cloudiness.postValue(View.VISIBLE)
+            return true
+
+        }else{
+            cloudiness.postValue(View.GONE)
+            return false
+
+        }
+
     }
 
 
@@ -78,31 +93,30 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle,
     }
 
 
-    fun fetchStandardDev() : LiveData<Double>{
+    fun observeStandardDev() : LiveData<Double>{
+        return sdValue
+    }
 
-        sdValue.value?.let {
-            return sdValue
-        }
+    fun fetchStandardDev(){
+
 
         if(savedStateHandle.contains("sd")){
             sdValue.postValue(savedStateHandle.get<Double>("sd"))
 
         }else{
             try{
-            sdValue = repository.getSD()
+                repository.getSD(object : Repository.Repo{
+                    override fun onSDcomplete(sd : Double) {
+                        sdValue.postValue(sd)
+                    }
+                })
+
             }catch (e: NoInternetException){
                 e.printStackTrace()
                 checkInternet.postValue(true)
             }
         }
 
-
-        return sdValue
-    }
-
-    fun getStandardDev() : LiveData<Double>{
-
-        return sdValue
     }
 
 }

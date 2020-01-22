@@ -12,7 +12,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 
 
@@ -116,6 +116,16 @@ class MainViewModelTest {
         Assert.assertNotNull(viewModel.getStandardDev().value)
         val precision = 0.01
         Assert.assertEquals(3.85, viewModel.getStandardDev().value as Double, precision)
+
+    }
+
+    @Test
+    fun `test checkCloudiness`(){
+
+
+        val isCloudy = viewModel.checkCloudiness(60)
+
+        Assert.assertEquals(true, isCloudy)
 
     }
 
